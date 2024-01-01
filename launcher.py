@@ -19,30 +19,45 @@ args = parser.parse_args()
 ####BASE FUNCTIONS####
 ######################
 
-#Function for selecting a rnadom photo for the base function slideshow
-def pick_random_image(photo_input_dir):
+history_file = './shown_image_history.txt'
+def pick_random_image(photo_input_dir, history_file):
+    # Read the history of selected images
+    if os.path.exists(history_file):
+        with open(history_file, 'r') as file:
+            selected_images = file.read().splitlines()
+    else:
+        selected_images = []
+
     # List of image file extensions
     image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp']
 
-    # List all files in the directory
-    files = os.listdir(photo_input_dir)
+    # List and filter image files
+    all_images = [file for file in os.listdir(photo_input_dir) if any(file.lower().endswith(ext) for ext in image_extensions)]
+    unselected_images = [image for image in all_images if image not in selected_images]
 
-    # Filter out files that are images
-    image_files = [file for file in files if any(file.lower().endswith(ext) for ext in image_extensions)]
-
-    # Pick a random image file
-    if image_files:
-        random_image = random.choice(image_files)
-        full_image_path = os.path.join(photo_input_dir, random_image)
-        return full_image_path
+    # Pick a random unselected image
+    if unselected_images:
+        random_image = random.choice(unselected_images)
+        # Update history
+        with open(history_file, 'a') as file:
+            file.write(random_image + '\n')
+            full_path = str(photo_input_dir + random_image)
+        return full_path
     else:
-        return None
+        # Reset the history file if all images have been selected
+        open(history_file, 'w').close()
+        # Optionally, you can pick a random image from all images
+        random_image = random.choice(all_images)
+        with open(history_file, 'a') as file:
+            file.write(random_image + '\n')
+        full_path = os.path.join(photo_input_dir, random_image)
+        return full_path
 
 
 # Base function using the photo input directory
 def base_function():
     # Execute the other script
-    subprocess.run(['python', "/home/pi/Pimoroni/inky/examples/7color/image.py", pick_random_image(args.photo_input_dir)])
+        subprocess.run(['python', "/home/pi/Pimoroni/inky/examples/7color/image.py", pick_random_image(args.photo_input_dir, history_file)])
 
 
 ######################
