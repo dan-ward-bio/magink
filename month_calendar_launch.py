@@ -3,7 +3,7 @@ import os
 import signal
 
 # Define the directory where the server will be started
-server_directory = "./day_calendar/"
+server_directory = "./month_calendar/"
 
 # Change the current working directory to the server directory
 os.chdir(server_directory)
