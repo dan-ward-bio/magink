@@ -75,7 +75,7 @@ def function_b():
     subprocess.run(['python', "day_calendar_launch.py"])
 
 def function_c():
-    print("Function C executed")
+    subprocess.run(['python', "month_calendar_launch.py"])
 
 def function_d():
     print("Function D executed")

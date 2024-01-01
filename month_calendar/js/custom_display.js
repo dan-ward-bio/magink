@@ -50,12 +50,7 @@ $(document).ready(function() {
 
     // display events
     $('#calendar').fullCalendar({
-        header: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'month,agendaWeek,agendaDay,listWeek,listMonth'
-        },
-        defaultView: 'agendaDay',
+        defaultView: 'month',
         firstDay: '1',
         locale: 'en',
         lang: 'en',
