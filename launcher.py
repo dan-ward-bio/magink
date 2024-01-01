@@ -57,7 +57,7 @@ def function_a():
     subprocess.run(['python', "bus_countdown.py"])
 
 def function_b():
-    print("Function B executed")
+    subprocess.run(['python', "day_calendar_launch.py"])
 
 def function_c():
     print("Function C executed")
