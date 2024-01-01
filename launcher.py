@@ -4,13 +4,57 @@ import signal
 import RPi.GPIO as GPIO
 import threading
 import time
+import argparse
+import os
+import random
+import subprocess
 
+# Argument parsing setup
+parser = argparse.ArgumentParser(description='Button-based launcher with timed functionality.')
+parser.add_argument('--photo-input-dir', type=str, required=True, help='Directory for photo input')
+parser.add_argument('--delay', type=int, default=300, help='Delay time in seconds for the base function loop')
+args = parser.parse_args()
+
+######################
+####BASE FUNCTIONS####
+######################
+
+#Function for selecting a rnadom photo for the base function slideshow
+def pick_random_image(photo_input_dir):
+    # List of image file extensions
+    image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp']
+
+    # List all files in the directory
+    files = os.listdir(photo_input_dir)
+
+    # Filter out files that are images
+    image_files = [file for file in files if any(file.lower().endswith(ext) for ext in image_extensions)]
+
+    # Pick a random image file
+    if image_files:
+        random_image = random.choice(image_files)
+        full_image_path = os.path.join(photo_input_dir, random_image)
+        return full_image_path
+    else:
+        return None
+
+
+# Base function using the photo input directory
 def base_function():
-    # Replace this with your own base function logic
-    print("Executing base function...")
+    # Execute the other script
+    subprocess.run(['python', "/home/pi/Pimoroni/inky/examples/7color/image.py", pick_random_image(args.photo_input_dir)])
 
+
+######################
+###BUTTON FUNCTIONS###
+######################
+
+
+
+# Functions for each button press
 def function_a():
-    print("Function A executed")
+    # Execute the bus_countdown script
+    subprocess.run(['python', "bus_countdown.py"])
 
 def function_b():
     print("Function B executed")
@@ -21,11 +65,11 @@ def function_c():
 def function_d():
     print("Function D executed")
 
-# Function to handle the 5-minute loop
+# Function to handle the timed loop
 def timed_loop():
     while True:
         base_function()
-        time.sleep(300)  # Wait for 5 minutes
+        time.sleep(args.delay)  # Use delay time from arguments
 
 # Start the timed loop in a separate thread
 threading.Thread(target=timed_loop, daemon=True).start()

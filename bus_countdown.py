@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import io
 from PIL import Image
 from inky.auto import auto
-
+import datetime 
 
 
 
@@ -84,6 +84,12 @@ def plot_stop_data_specific_size(data_list):
             ax.axis('off')
             ax.set_xlim(0, 1)
             ax.set_ylim(0, 1)
+
+        # Get current time and format it
+        current_time = datetime.datetime.now().strftime("%H:%M:%S")
+
+        # Display the current time on the top right corner of the plot
+        plt.text(0.95, 0.95, current_time, horizontalalignment='right', verticalalignment='top', transform=plt.gcf().transFigure, fontsize=fontsize)
 
         plt.tight_layout()  # Optimize the layout
 	# Adjust subplot margins
