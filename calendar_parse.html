@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8' />
+    <script src='./fullcalendar-6.1.10/dist/index.global.js'></script>
+    <script src=.ical.js/ical'></script>
+    <script>
+var calendar = new Calendar(calendarEl, {
+  plugins: [dayGridPlugin, iCalendarPlugin],
+  events: {
+    url: 'https://outlook.office365.com/owa/calendar/429e3522b76d479680b885da42a382df@gstt.nhs.uk/9ea7a2f132d74c7397cd9426474b3c8b1364589468610577580/calendar.ics',
+    format: 'ics'
+  }
+})
+
+calendar.render()
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth'
+        });
+        calendar.render();
+      });
+
+    </script>
+  </head>
+  <body>
+    <div id='calendar'></div>
+  </body>
+</html>
