@@ -72,7 +72,7 @@ def function_a():
     subprocess.run(['python', "bus_countdown.py"])
     time.sleep(60)
     subprocess.run(['python', "bus_countdown.py"])
-    time.sleep(60
+    time.sleep(60)
     timed_loop()
 
 def function_b():
