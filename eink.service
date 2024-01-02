@@ -1,0 +1,17 @@
+#this service in installed by pasting the contents of this file in the directoy below and running the commands:
+#sudo nano /etc/systemd/system/eink.service
+#sudo systemctl daemon-reload
+#sudo systemctl start eink.service
+#sudo systemctl enable eink.service
+
+[Unit]
+Description=E-ink magic mirror service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/eink_tools/launcher.py --photo-input-dir /home/pi/photos_input/processed/ --delay 20000
+Restart=always
+User=pi
+Group=pi
+[Install]
+WantedBy=multi-user.target

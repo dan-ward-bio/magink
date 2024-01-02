@@ -19,7 +19,7 @@ args = parser.parse_args()
 ####BASE FUNCTIONS####
 ######################
 
-history_file = './shown_image_history.txt'
+history_file = '/home/pi/eink_tools/shown_image_history.txt'
 def pick_random_image(photo_input_dir, history_file):
     # Read the history of selected images
     if os.path.exists(history_file):
@@ -68,17 +68,17 @@ def base_function():
 # Functions for each button press
 def function_a():
     # Execute the bus_countdown script
-    subprocess.run(['python', "bus_countdown.py"])
+    subprocess.run(['python', "/home/pi/eink_tools/bus_countdown.py"])
     time.sleep(60)
-    subprocess.run(['python', "bus_countdown.py"])
+    subprocess.run(['python', "/home/pi/eink_tools/bus_countdown.py"])
     time.sleep(60)
     base_function()
 def function_b():
-    subprocess.run(['python', "day_calendar_launch.py"])
+    subprocess.run(['python', "/home/pi/eink_tools/day_calendar_launch.py"])
     time.sleep(180)
     base_function()
 def function_c():
-    subprocess.run(['python', "month_calendar_launch.py"])
+    subprocess.run(['python', "/home/pi/eink_tools/month_calendar_launch.py"])
     time.sleep(180)
     base_function()
 def function_d():
