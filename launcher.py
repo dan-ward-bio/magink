@@ -70,15 +70,25 @@ def base_function():
 def function_a():
     # Execute the bus_countdown script
     subprocess.run(['python', "bus_countdown.py"])
+    time.sleep(60)
+    subprocess.run(['python', "bus_countdown.py"])
+    time.sleep(60
+    timed_loop()
 
 def function_b():
     subprocess.run(['python', "day_calendar_launch.py"])
+    time.sleep(300)
+    timed_loop()
 
 def function_c():
     subprocess.run(['python', "month_calendar_launch.py"])
+    time.sleep(300)
+    timed_loop()
 
 def function_d():
     print("Function D executed")
+    time.sleep(300)
+    timed_loop()
 
 # Function to handle the timed loop
 def timed_loop():

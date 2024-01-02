@@ -13,13 +13,14 @@ inky = auto(ask_user=True, verbose=True)
 #Define image configs
 saturation = 0
 buf = io.BytesIO()
-vertical_spacing = 0.2  # Increase this value if text is overlapping
-titlesize = 30
-fontsize = 20
+vertical_spacing = 0.3  # Increase this value if text is overlapping
+titlesize = 18
+fontsize = 15
 
 # Dictionary mapping stop IDs to given names
 stops = {
-    '490012165N': 'Doubletree',
+    '490012165N': 'Doubletree West',
+    '490012165S': 'Doubletree East',
     '490004671W': 'Inner Ring',
     # Add more stop IDs and names as needed
 }
