@@ -56,7 +56,6 @@ def pick_random_image(photo_input_dir, history_file):
 
 # Base function using the photo input directory
 def base_function():
-    # Execute the other script
         subprocess.run(['python', "/home/pi/Pimoroni/inky/examples/7color/image.py", pick_random_image(args.photo_input_dir, history_file)])
 
 
@@ -73,23 +72,19 @@ def function_a():
     time.sleep(60)
     subprocess.run(['python', "bus_countdown.py"])
     time.sleep(60)
-    timed_loop()
-
+    base_function()
 def function_b():
     subprocess.run(['python', "day_calendar_launch.py"])
-    time.sleep(300)
-    timed_loop()
-
+    time.sleep(180)
+    base_function()
 def function_c():
     subprocess.run(['python', "month_calendar_launch.py"])
-    time.sleep(300)
-    timed_loop()
-
+    time.sleep(180)
+    base_function()
 def function_d():
     print("Function D executed")
-    time.sleep(300)
-    timed_loop()
-
+    time.sleep(180)
+    base_function()
 # Function to handle the timed loop
 def timed_loop():
     while True:
