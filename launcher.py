@@ -8,6 +8,11 @@ import os
 import random
 import subprocess
 
+##########################################
+calendar_url1 = "https://ics.calendarlabs.com/75/e62b6480/UK_Holidays.ics"
+calendar_url2 = "https://ics.calendarlabs.com/75/e62b6480/UK_Holidays.ics"
+##########################################
+
 # Argument parsing setup
 parser = argparse.ArgumentParser(description='Button-based launcher with timed functionality.')
 parser.add_argument('--photo-input-dir', type=str, required=True, help='Directory for photo input')
@@ -73,10 +78,14 @@ def function_a():
     time.sleep(60)
     base_function()
 def function_b():
+    subprocess.run(['wget', calendar_url1, "-O calendar/js/calendar_input1.ics"])
+    subprocess.run(['wget', calendar_url2, "-O calendar/js/calendar_input2.ics"])
     subprocess.run(['python', "/home/pi/eink_tools/day_calendar_launch.py"])
     time.sleep(180)
     base_function()
 def function_c():
+    subprocess.run(['wget', calendar_url1, "-O calendar/js/calendar_input1.ics"])
+    subprocess.run(['wget', calendar_url2, "-O calendar/js/calendar_input2.ics"])
     subprocess.run(['python', "/home/pi/eink_tools/month_calendar_launch.py"])
     time.sleep(180)
     base_function()
