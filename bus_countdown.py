@@ -5,10 +5,20 @@ import io
 from PIL import Image
 from inky.auto import auto
 import datetime 
-
-
-
 inky = auto(ask_user=True, verbose=True)
+
+
+
+###########################################################################
+#####################User configurable data################################
+###########################################################################
+# Dictionary mapping stop IDs to given names
+stops = {
+    '490013766H': 'My bus stop 1',
+    '490014585M': 'My bus stop 2',
+    'another one': 'My bus stop 3',
+    # Add more stop IDs and names as needed
+}
 
 #Define image configs
 saturation = 0
@@ -16,14 +26,14 @@ buf = io.BytesIO()
 vertical_spacing = 0.3  # Increase this value if text is overlapping
 titlesize = 18
 fontsize = 15
+###########################################################################
+###########################################################################
+###########################################################################
 
-# Dictionary mapping stop IDs to given names
-stops = {
-    '490012165N': 'Doubletree West',
-    '490012165S': 'Doubletree East',
-    '490004671W': 'Inner Ring',
-    # Add more stop IDs and names as needed
-}
+
+
+
+
 
 # Function to truncate 'train-destination' if it's longer than 12 characters
 def truncate_destination(destination):

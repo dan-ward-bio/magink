@@ -1,6 +1,6 @@
 // Edit your ics sources here
 ics_sources = [
-    {url:'./calendar_test.ics', title: 'UK Bank Holidays in England and Wales', event_properties: {color: 'DodgerBlue'}}
+    {url:'./calendar_input.ics', title: 'UK Bank Holidays in England and Wales', event_properties: {color: 'DodgerBlue'}}
 ]
 
 
