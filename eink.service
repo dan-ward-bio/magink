@@ -9,7 +9,7 @@ Description=E-ink magic mirror service
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /home/pi/eink_tools/launcher.py --photo-input-dir /home/pi/photos_input/processed/ --delay 20000
+ExecStart=/usr/bin/python3 /home/pi/eink_tools/launcher.py --photo-input-dir /home/pi/photos_input/processed/ --delay 3600
 Restart=always
 User=pi
 Group=pi

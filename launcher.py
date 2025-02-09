@@ -15,111 +15,135 @@ calendar_url2 = "https://ics.calendarlabs.com/75/e62b6480/UK_Holidays.ics"
 
 # Argument parsing setup
 parser = argparse.ArgumentParser(description='Button-based launcher with timed functionality.')
-parser.add_argument('--photo-input-dir', type=str, required=True, help='Directory for photo input')
-parser.add_argument('--delay', type=int, default=300, help='Delay time in seconds for the base function loop')
+parser.add_argument('--photo-input-dir', type=str, required=True,
+                    help='Directory for photo input')
+parser.add_argument('--delay', type=int, default=300,
+                    help='Delay time in seconds for the base function loop')
 args = parser.parse_args()
 
-######################
-####BASE FUNCTIONS####
-######################
+# Ensure the input directory has a trailing slash (not strictly required if we use os.path.join, but often convenient).
+# You can skip this if you always use os.path.join(photo_input_dir, random_image).
+if not args.photo_input_dir.endswith(os.sep):
+    args.photo_input_dir += os.sep
 
 history_file = '/home/pi/eink_tools/shown_image_history.txt'
+
+# A threading lock to ensure no race conditions between the timed loop and button callbacks
+pick_image_lock = threading.Lock()
+
 def pick_random_image(photo_input_dir, history_file):
-    # Read the history of selected images
-    if os.path.exists(history_file):
-        with open(history_file, 'r') as file:
-            selected_images = file.read().splitlines()
-    else:
-        selected_images = []
+    with pick_image_lock:
+        # Read the history of selected images (filenames only)
+        if os.path.exists(history_file):
+            with open(history_file, 'r') as file:
+                selected_images = file.read().splitlines()
+        else:
+            selected_images = []
 
-    # List of image file extensions
-    image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp']
+        # Acceptable image extensions
+        image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp']
 
-    # List and filter image files
-    all_images = [file for file in os.listdir(photo_input_dir) if any(file.lower().endswith(ext) for ext in image_extensions)]
-    unselected_images = [image for image in all_images if image not in selected_images]
+        # Gather all image filenames in the directory
+        all_images = [
+            fname for fname in os.listdir(photo_input_dir)
+            if any(fname.lower().endswith(ext) for ext in image_extensions)
+        ]
 
-    # Pick a random unselected image
-    if unselected_images:
-        random_image = random.choice(unselected_images)
-        # Update history
+        # Safety check: if there are no images, return None or handle error
+        if not all_images:
+            print("No images found in directory:", photo_input_dir)
+            return None
+
+        # Filter out images that have already been selected
+        unselected_images = [img for img in all_images if img not in selected_images]
+
+        if unselected_images:
+            # Pick a random unselected image
+            random_image = random.choice(unselected_images)
+        else:
+            # All images have been shown; reset history and pick again
+            open(history_file, 'w').close()  # Clear the file
+            random_image = random.choice(all_images)
+
+        # Update history by appending this new choice
         with open(history_file, 'a') as file:
             file.write(random_image + '\n')
-            full_path = str(photo_input_dir + random_image)
-        return full_path
-    else:
-        # Reset the history file if all images have been selected
-        open(history_file, 'w').close()
-        # Optionally, you can pick a random image from all images
-        random_image = random.choice(all_images)
-        with open(history_file, 'a') as file:
-            file.write(random_image + '\n')
-        full_path = os.path.join(photo_input_dir, random_image)
-        return full_path
+
+        # Return the full path to the chosen image
+        return os.path.join(photo_input_dir, random_image)
 
 
-# Base function using the photo input directory
 def base_function():
-        subprocess.run(['python', "/home/pi/Pimoroni/inky/examples/7color/image.py", pick_random_image(args.photo_input_dir, history_file)])
+    """Displays a random image on the Inky display."""
+    image_path = pick_random_image(args.photo_input_dir, history_file)
+    if image_path:
+        subprocess.run(['python3', "/home/pi/Pimoroni/inky/examples/7color/image.py", image_path])
+    else:
+        print("Skipping display update (no image found).")
 
 
 ######################
 ###BUTTON FUNCTIONS###
 ######################
 
-
-
-# Functions for each button press
 def function_a():
-    # Execute the bus_countdown script
-    subprocess.run(['python', "/home/pi/eink_tools/bus_countdown.py"])
+    # Execute the bus_countdown script twice (with 60s pause), then return to the photo cycle
+    subprocess.run(['python3', "/home/pi/eink_tools/bus_countdown.py"])
     time.sleep(60)
-    subprocess.run(['python', "/home/pi/eink_tools/bus_countdown.py"])
+    subprocess.run(['python3', "/home/pi/eink_tools/bus_countdown.py"])
     time.sleep(60)
     base_function()
+
 def function_b():
-    subprocess.run(['wget', calendar_url1, "-O calendar/js/calendar_input1.ics"])
-    subprocess.run(['wget', calendar_url2, "-O calendar/js/calendar_input2.ics"])
-    subprocess.run(['python', "/home/pi/eink_tools/day_calendar_launch.py"])
+    # Download ICS files, show day calendar, then return to photo cycle
+    subprocess.run(['wget', calendar_url1, "-O", "calendar/js/calendar_input1.ics"])
+    subprocess.run(['wget', calendar_url2, "-O", "calendar/js/calendar_input2.ics"])
+    subprocess.run(['python3', "/home/pi/eink_tools/day_calendar_launch.py"])
     time.sleep(180)
     base_function()
+
 def function_c():
-    subprocess.run(['wget', calendar_url1, "-O calendar/js/calendar_input1.ics"])
-    subprocess.run(['wget', calendar_url2, "-O calendar/js/calendar_input2.ics"])
-    subprocess.run(['python', "/home/pi/eink_tools/month_calendar_launch.py"])
+    # Download ICS files, show month calendar, then return to photo cycle
+    subprocess.run(['wget', calendar_url1, "-O", "calendar/js/calendar_input1.ics"])
+    subprocess.run(['wget', calendar_url2, "-O", "calendar/js/calendar_input2.ics"])
+    subprocess.run(['python3', "/home/pi/eink_tools/month_calendar_launch.py"])
     time.sleep(180)
     base_function()
+
 def function_d():
     print("Function D executed")
     time.sleep(180)
     base_function()
-# Function to handle the timed loop
+
+######################
+# TIMED LOOP THREAD  #
+######################
+
 def timed_loop():
     while True:
         base_function()
-        time.sleep(args.delay)  # Use delay time from arguments
+        time.sleep(args.delay)
 
 # Start the timed loop in a separate thread
 threading.Thread(target=timed_loop, daemon=True).start()
 
+######################
+# GPIO SETUP & MAIN  #
+######################
+
 # Gpio pins for each button (from top to bottom)
 BUTTONS = [5, 6, 16, 24]
-
-# These correspond to buttons A, B, C, and D respectively
 LABELS = ['A', 'B', 'C', 'D']
 FUNCTIONS = [function_a, function_b, function_c, function_d]
 
-# Set up RPi.GPIO with the "BCM" numbering scheme
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(BUTTONS, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-# "handle_button" will be called every time a button is pressed
 def handle_button(pin):
     label = LABELS[BUTTONS.index(pin)]
-    print("Button press detected on pin: {} label: {}".format(pin, label))
+    print(f"Button press detected on pin: {pin}, label: {label}")
     FUNCTIONS[BUTTONS.index(pin)]()  # Execute the corresponding function
 
-# Loop through our buttons and attach the "handle_button" function to each
 for pin in BUTTONS:
     GPIO.add_event_detect(pin, GPIO.FALLING, callback=handle_button, bouncetime=250)
 
