@@ -13,6 +13,8 @@
 ### Description
 
 
+sudo apt-get install libopenblas-dev
+
 
 ### Equipment
 * Pi Zero 2 W or greater.
