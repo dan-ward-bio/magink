@@ -5,7 +5,7 @@ from PIL import Image
 
 def resize_and_crop_image(input_path, output_path, target_size):
     with Image.open(input_path) as img:
-        img.thumbnail((target_size[0], target_size[1]), Image.ANTIALIAS)
+        img.thumbnail((target_size[0], target_size[1]), Image.LANCZOS)
         width, height = img.size
 
         # Calculate cropping dimensions
